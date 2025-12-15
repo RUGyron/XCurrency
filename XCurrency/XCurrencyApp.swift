@@ -1,32 +1,25 @@
-//
-//  XCurrencyApp.swift
-//  XCurrency
-//
-//  Created by Владислав Пивош on 10.12.2025.
-//
-
 import SwiftUI
 import SwiftData
+import BackgroundTasks
 
 @main
-struct XCurrencyApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+struct CurrencyCalcApp: App {
+    @Environment(\.scenePhase) private var scenePhase
+    private let backgroundScheduler = BackgroundScheduler()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onAppear {
+                    backgroundScheduler.register()
+                    backgroundScheduler.scheduleAppRefresh()
+                }
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(for: [StoredRate.self])
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .background {
+                backgroundScheduler.scheduleAppRefresh()
+            }
+        }
     }
 }
