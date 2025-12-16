@@ -390,7 +390,7 @@ private struct SettingsView: View {
             appIconPreference = icon
         } label: {
             VStack(spacing: 8) {
-                iconPreview(name: icon == .dark ? "AppIconDark" : "AppIcon")
+                iconPreview(name: icon == .dark ? "AppIconDarkPreview" : "AppIconPreview")
                     .overlay(
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(appIconPreference == icon ? Color.blue : Color.clear, lineWidth: 2)
@@ -408,8 +408,8 @@ private struct SettingsView: View {
             name,
             "\(name)-60x60",
             "\(name)-29x29",
-            "AppIcon",
-            "AppIconDark"
+            "AppIconPreview",
+            "AppIconDarkPreview"
         ]
 
         if let found = candidates.compactMap({ UIImage(named: $0) }).first {
